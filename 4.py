@@ -2,9 +2,7 @@ import sqlite3
 import json
 import requests
 import streamlit as st
-import emoji as em
 import time
-from PIL import Image
 def createDB():
     link = sqlite3.connect('BiliFollowDB.db')
 
@@ -129,6 +127,7 @@ def getFollowingList(uid: int):
 
 
 def getFollowingUid(uid):
+
     uid=int(uid)
     url = "https://api.bilibili.com/x/relation/followings?vmid=%d&pn=%d&ps=50&order=desc&order_type=attention&jsonp=jsonp"  # % (UID, Page Number)
 
@@ -197,32 +196,53 @@ def rework():
 
     return newID
 
+def jz():
+    'loading...'
+    latest_iteration = st.empty()
+    bar = st.progress(0)
+
+    for i in range(100):
+        # Update the progress bar with each iteration.
+        latest_iteration.text(f'进度 {i + 1}%')
+        bar.progress(i + 1)
+        time.sleep(0.1)
+
 
 if __name__ == "__main__":
     createDB()
 
     # work([**put root UID here**,])
 st.title('0723作业查询')
-a=st.multiselect('你好，可以给b站嘉然今天吃什么点个关注吗',
-               ('可以捏','不可以'))
-o=a[0]
+o=st.selectbox('你好，可以给b站嘉然今天吃什么点个关注吗',
+               (' ','可以捏','不可以'))
+
 
 
 
 
 if o == "不可以" :
     '关注嘉然，顿顿解馋！'
-if o == "可以捏" :
-    k = st.text_input("好好好，请输入你的b站uid，方便检查关注情况")
+if o == '可以捏' :
+    k = st.text_input('好好好，请输入你的b站uid，方便检查关注情况↓')
+    try:
+        k = float(k)
 
-    z = getFollowingUid(k)
+        z = getFollowingUid(k)
+        if 672328094 in z:
+            jz()
+            st.write('好好好，感谢关注')
+            '图片链接：https://pan.baidu.com/s/1JsIO5gqjYM6KRgumm9CYXA?pwd=4433'
 
-    if 672328094 in z:
-         st.write('好好好，感谢关注')
-         '图片链接：https://pan.baidu.com/s/1HtsOiyGge3XHpwYOPkUwgA?pwd=4433'
+        if 672328094 not in z:
+            jz()
+            st.write('很抱歉，查询失败了，可能是未关注或网络延迟,输入错误,等原因，请重试')
 
-    else:
-        st.write('很抱歉，查询失败了，可能是未关注或网络延迟等原因，请重试')
+    except ValueError:
+        p=0
+
+
+
+
 
 
 
